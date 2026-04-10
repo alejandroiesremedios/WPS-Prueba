@@ -991,12 +991,6 @@ document.addEventListener('DOMContentLoaded', () => {
       incomplete = true;
     }
 
-    if (incomplete) {
-      btnEvaluar.textContent = '❌ Faltan campos en rojo';
-      setTimeout(() => btnEvaluar.textContent = 'Finalizar y Evaluar WPS', 3000);
-      return;
-    }
-
     // 3. Evaluar (confirm() eliminado por bloqueo de Google Sites)
     recalculateAll();
 
@@ -1005,8 +999,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const notaFinal = Math.min(totalAchieved, 10).toFixed(1);
     
     scoreCircle.textContent = notaFinal;
-    modalTitle.textContent = notaFinal >= 5 ? '¡Buen trabajo!' : 'Necesitas mejorar';
-    modalSummary.textContent = `Tu puntuación final es de ${notaFinal} sobre 10. Revisa los detalles en el panel lateral para ver en qué has fallado.`;
+    
+    // Si hay campos incompletos, cambiar el mensaje de la pantalla final sin bloquearlo
+    const driveBtn = document.getElementById('btnEnviarDrive');
+    if (incomplete) {
+      modalTitle.textContent = 'Faltan cosas por rellenar';
+      modalSummary.textContent = `Tu nota actual es ${notaFinal} de 10. ¡Tu nota puede ser mejor si cierras esto y rellenando las casillas rojas!`;
+      if (driveBtn) {
+        driveBtn.textContent = 'Entregar bajo mi responsabilidad';
+        driveBtn.style.backgroundColor = '#d97706'; // Naranja para advertir
+      }
+    } else {
+      modalTitle.textContent = notaFinal >= 5 ? '¡Buen trabajo!' : 'Necesitas mejorar';
+      modalSummary.textContent = `Tu puntuación final es de ${notaFinal} sobre 10. Revisa los detalles en el panel lateral para ver en qué has fallado.`;
+      if (driveBtn) {
+        driveBtn.textContent = 'Enviar a Google Drive';
+        driveBtn.style.backgroundColor = '#0f9d58'; // Verde normal
+      }
+    }
     
     modal.classList.add('active');
   });
