@@ -992,16 +992,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (incomplete) {
-      alert('Por favor, rellena todos los campos obligatorios antes de enviar.');
+      btnEvaluar.textContent = '❌ Faltan campos en rojo';
+      setTimeout(() => btnEvaluar.textContent = 'Finalizar y Evaluar WPS', 3000);
       return;
     }
 
-    // 2. Confirmación de seguridad
-    if (!confirm('¿Estás seguro de que está completo?')) {
-      return;
-    }
-
-    // 3. Evaluar
+    // 3. Evaluar (confirm() eliminado por bloqueo de Google Sites)
     recalculateAll();
 
     let totalAchieved = 0;
@@ -1155,13 +1151,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const accion = document.getElementById('defectoAccion').value;
 
     if (!capa || !tipo || !causa || !accion) {
-      alert('Por favor, rellena todos los campos del análisis de defecto antes de guardar.');
+      const originalText = document.getElementById('btnAddDefecto').textContent;
+      document.getElementById('btnAddDefecto').textContent = '❌ Faltan datos';
+      setTimeout(() => document.getElementById('btnAddDefecto').textContent = originalText, 2000);
       return;
     }
 
     // Evitar duplicados por capa
     if (reportedDefects.some(d => d.capa === capa)) {
-      alert('Ya has reportado un defecto para esta capa. Borra el anterior si quieres cambiarlo.');
+      const originalText = document.getElementById('btnAddDefecto').textContent;
+      document.getElementById('btnAddDefecto').textContent = '⚠️ Capa repetida';
+      setTimeout(() => document.getElementById('btnAddDefecto').textContent = originalText, 2000);
       return;
     }
 
