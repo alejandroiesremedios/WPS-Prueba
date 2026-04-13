@@ -1085,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (typeof html2pdf !== 'undefined') {
           const pdfWrapper = document.createElement('div');
-          pdfWrapper.style.cssText = 'position:absolute;top:-99999px;left:0;width:800px;background:#fff;padding:10px;box-sizing:border-box;';
+          pdfWrapper.style.cssText = 'position:absolute;top:0;left:-9999px;width:800px;background:#fff;padding:10px;box-sizing:border-box;';
 
           const containerClone = document.querySelector('.container').cloneNode(true);
 
@@ -1124,7 +1124,7 @@ document.addEventListener('DOMContentLoaded', () => {
               margin: 8,
               filename: pdfFilename,
               image: { type: 'jpeg', quality: 0.88 },
-              html2canvas: { scale: 1.3, useCORS: true, logging: false },
+              html2canvas: { scale: 1.3, useCORS: true, allowTaint: true, logging: false },
               jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             }).from(pdfWrapper).outputPdf('blob');
 
