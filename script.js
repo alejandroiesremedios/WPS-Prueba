@@ -1315,6 +1315,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (pdfResult) {
             pdfBlob = pdfResult.blob;
             pdfBase64 = pdfResult.base64;
+            enviarDriveStatus.textContent = '✔ PDF generado (' + (pdfBase64 ? pdfBase64.length : 0) + ' chars base64)';
+          } else {
+            enviarDriveStatus.textContent = '⚠️ generarPDFWPS devolvió null';
           }
         } catch (pdfErr) {
           console.warn('Error generando PDF:', pdfErr);
