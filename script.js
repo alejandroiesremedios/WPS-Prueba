@@ -1084,40 +1084,33 @@ document.addEventListener('DOMContentLoaded', () => {
         let pdfBase64 = null;
 
         if (typeof html2pdf !== 'undefined') {
+          // Capturamos los elementos reales (no clones) para que html2canvas
+          // los encuentre ya renderizados con sus estilos correctos.
+
+          const wpsForm = document.querySelector('.wps-form');
+          const containerEl = document.querySelector('.container');
+          const evalPanelEl = document.getElementById('evaluationPanel');
+          const livescoreEl = document.getElementById('livescoreBar');
+
+          // Guardar estados originales
+          const savedOpacity = wpsForm.style.opacity;
+
+          // Preparar página para captura
+          wpsForm.style.opacity = '1';
+          if (livescoreEl) livescoreEl.style.display = 'none';
+
+          // Ocultar botón y estado en el panel de resultados
+          const btnEnviarEl2 = evalPanelEl.querySelector('#btnEnviarDrive');
+          const statusEl2 = evalPanelEl.querySelector('#enviarDriveStatus');
+          if (btnEnviarEl2) btnEnviarEl2.style.display = 'none';
+          if (statusEl2) statusEl2.style.display = 'none';
+
+          // Envolver ambos elementos en un div temporal para captura conjunta
           const pdfWrapper = document.createElement('div');
-          pdfWrapper.style.cssText = 'position:absolute;top:0;left:-9999px;width:800px;background:#fff;padding:10px;box-sizing:border-box;';
-
-          const containerClone = document.querySelector('.container').cloneNode(true);
-
-          // cloneNode no copia el valor actual de <input> (solo el atributo HTML inicial)
-          // Sincronizamos manualmente los inputs por orden de aparición
-          const origInputs = document.querySelectorAll('.container input, .container select, .container textarea');
-          const cloneInputs = containerClone.querySelectorAll('input, select, textarea');
-          origInputs.forEach((orig, i) => {
-            if (!cloneInputs[i]) return;
-            if (orig.type === 'checkbox' || orig.type === 'radio') {
-              cloneInputs[i].checked = orig.checked;
-            } else {
-              cloneInputs[i].value = orig.value;
-            }
-          });
-
-          // El formulario tiene opacity:0.7 por el congelado — resetear en el clon
-          const cloneForm = containerClone.querySelector('.wps-form');
-          if (cloneForm) {
-            cloneForm.style.opacity = '1';
-            cloneForm.style.pointerEvents = 'auto';
-          }
-
-          const panelClone = document.getElementById('evaluationPanel').cloneNode(true);
-          const btnClone = panelClone.querySelector('#btnEnviarDrive');
-          if (btnClone) btnClone.style.display = 'none';
-          const statusClone = panelClone.querySelector('#enviarDriveStatus');
-          if (statusClone) statusClone.style.display = 'none';
-
-          pdfWrapper.appendChild(containerClone);
-          pdfWrapper.appendChild(panelClone);
-          document.body.appendChild(pdfWrapper);
+          pdfWrapper.style.cssText = 'background:#fff;';
+          containerEl.parentNode.insertBefore(pdfWrapper, containerEl);
+          pdfWrapper.appendChild(containerEl);
+          pdfWrapper.appendChild(evalPanelEl);
 
           try {
             pdfBlob = await html2pdf().set({
@@ -1137,7 +1130,15 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch (pdfErr) {
             console.warn('Error generando PDF:', pdfErr);
           } finally {
-            document.body.removeChild(pdfWrapper);
+            // Restaurar estructura DOM original
+            pdfWrapper.parentNode.insertBefore(containerEl, pdfWrapper);
+            pdfWrapper.parentNode.insertBefore(evalPanelEl, pdfWrapper);
+            pdfWrapper.parentNode.removeChild(pdfWrapper);
+
+            // Restaurar estados
+            wpsForm.style.opacity = savedOpacity;
+            if (btnEnviarEl2) { btnEnviarEl2.style.display = 'block'; btnEnviarEl2.disabled = true; }
+            if (statusEl2) statusEl2.style.display = 'block';
           }
         }
 
