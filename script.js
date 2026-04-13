@@ -1262,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnEnviarDrive) {
     btnEnviarDrive.addEventListener('click', async () => {
       // ¡ATENCIÓN! Reemplazar esta URL por la proporcionada al desplegar tu Google Apps Script
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbyfUgenkecBnjXwcM1D6DqzSLlddGnYAeWbdTc0qyCVC_bh1eM1e_SlV6vPB8QmhBHu/exec"; 
+      const GAS_URL = "https://script.google.com/macros/s/AKfycbzuUoYYuzGfVz1WOmwRWcU08K_Jnv2Mjn8re3EoW17cdwGPsSaqMKIolhfviNCdI7hL/exec"; 
       
       if (GAS_URL === "URL_DE_TU_SCRIPT_AQUI") {
         enviarDriveStatus.style.display = 'block';
